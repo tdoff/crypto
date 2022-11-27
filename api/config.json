@@ -1,0 +1,6 @@
+{
+  "library": "spring-boot",
+  "modelPackage": "kz.crypto.api.model",
+  "apiPackage": "kz.crypto.api",
+  "dateLibrary": "java8"
+}

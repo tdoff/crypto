@@ -30,7 +30,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.liquibase:liquibase-core'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.6'
+    implementation 'io.swagger:swagger-annotations:1.6.9'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.modelmapper:modelmapper:3.1.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
@@ -39,6 +44,43 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.34'
+    swaggerUI 'org.webjars:swagger-ui:4.15.5'
+}
+
+swaggerSources {
+    tokoRestApi {
+        inputFile = file('api/crypto-rest-api.yaml')
+        code {
+            language = 'spring'
+            outputDir = file('build/generated')
+            configFile = file('api/config.json')
+            components = ['models', 'apis']
+            additionalProperties = ['useTags': 'true']
+        }
+        ui {
+            outputDir = file("${buildDir}/generated/src/main/resources/static")
+            wipeOutputDir = true
+        }
+    }
+}
+
+compileJava.dependsOn swaggerSources.tokoRestApi.code
+compileJava.dependsOn swaggerSources.tokoRestApi.ui
+sourceSets.main.java.srcDir "${swaggerSources.tokoRestApi.code.outputDir}/src/main/java"
+sourceSets.main.resources.srcDirs += "${buildDir}/generated/src/main/resources"
+
+bootBuildImage {
+    imageName = "tdoff/${project.name}:${project.version}"
+    publish = true
+    docker {
+        publishRegistry {
+            username = System.getenv("DOCKER_USERNAME")
+            password = System.getenv("DOCKER_PASSWORD")
+            url = "https://hub.docker.com/repository/docker/tdoff/"
+        }
+    }
 }
 
 tasks.named('test') {

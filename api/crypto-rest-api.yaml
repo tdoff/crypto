@@ -1,0 +1,465 @@
+openapi: 3.0.1
+info:
+  title: Crypto REST API
+  description: Crypto REST API methods description
+  contact:
+    email: temirrrlan@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.8
+servers:
+  - url: http://localhost:8080
+    description: Local environment
+tags:
+  - name: Cryptos
+    description: Crypto API to manage crypto's prices
+paths:
+  ## Products API
+  /cryptos:
+    get:
+      tags:
+        - Cryptos
+      summary: Retrieve all products #Exposes an endpoint that will return a descending sorted list of all the cryptos, comparing the normalized range
+      operationId: getCryptos
+      security: []
+      responses:
+        200:
+          description: The list of cryptos has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Crypto'
+    post:
+      tags:
+        - Cryptos
+      summary: Creates a new crypto
+      operationId: createCrypto
+      security: []
+      requestBody:
+        description: New crypto creation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCryptoRequest'
+        required: true
+      responses:
+        201:
+          description: New crypto has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto'
+  /cryptos/{id}:
+    get:
+      tags:
+        - Cryptos
+      summary: Get crypto by ID
+      description: >
+        This method returns crypto with given ID
+      operationId: getCrypto
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        200:
+          description:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Crypto'
+        404:
+          description: Crypto with a given ID has not beed found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        410:
+          description: The crypto has already been deleted
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+#    patch:
+#      tags:
+#        - Products
+#      summary: Partially updates a given product
+#      description: >
+#        This method allows you to partially update a product with a given `id`.
+#        In case some properties are not set in the request, they will not be updated.
+#      operationId: updateProduct
+#      security: []
+#      parameters:
+#        - $ref: '#/components/parameters/EntityId'
+#      requestBody:
+#        description: Product update request
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/UpdateProductRequest'
+#        required: true
+#      responses:
+#        204:
+#          description: The product has been successfully updated
+#        404:
+#          description: Product with a given ID has not beed found
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#        410:
+#          description: The product has already been deleted
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+    delete:
+      tags:
+        - Cryptos
+      summary: Softly deletes a given crypto
+      description: >
+        This method allows you to mark a crypto with a given `id` as deleted and stores the date of deletion.
+        Deleted cryptos won't be available for users anymore.
+      operationId: deleteCrypto
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        204:
+          description: Crypto has been successfully deleted
+        404:
+          description: Crypto with a given ID has not beed found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        410:
+          description: The crypto has already been deleted
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+  ## Users API
+#  /users:
+#    get:
+#      tags:
+#        - Users
+#      summary: Retrieve all Users
+#      operationId: getUsers
+#      responses:
+#        200:
+#          description: The list of users has been successfully fetched
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/User'
+#        401:
+#          description: The request requires user authentication
+#    post:
+#      tags:
+#        - Users
+#      summary: Create user
+#      description: This method creates a new user.
+#      operationId: createUser
+#      requestBody:
+#        description: Create user request
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/CreateUserRequest'
+#        required: true
+#      responses:
+#        201:
+#          description: New user has been successfully created
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/User'
+#        401:
+#          description: The request requires user authentication
+#  /users/{id}:
+#    get:
+#      tags:
+#        - Users
+#      summary: Get user by ID
+#      description: >
+#        This method returns user with given ID
+#      operationId: getUser
+#      parameters:
+#        - $ref: '#/components/parameters/EntityId'
+#      responses:
+#        200:
+#          description:
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/User'
+#        404:
+#          description: User with a given ID has not beed found
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#        410:
+#          description: The user has already been deleted
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#    patch:
+#      tags:
+#        - Users
+#      summary: Update user
+#      description: This can only be done by the logged in user.
+#      operationId: updateUser
+#      parameters:
+#        - $ref: '#/components/parameters/EntityId'
+#      requestBody:
+#        description: Updated user object
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/UpdateUserRequest'
+#        required: true
+#      responses:
+#        204:
+#          description: The user has been successfully updated
+#        401:
+#          description: The request requires user authentication
+#        404:
+#          description: User with a given ID has not beed found
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#        410:
+#          description: The user has already been deleted
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#    delete:
+#      tags:
+#        - Users
+#      summary: Delete user by ID
+#      description: For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
+#      operationId: deleteUser
+#      parameters:
+#        - $ref: '#/components/parameters/EntityId'
+#      responses:
+#        204:
+#          description: User has been successfully deleted
+#        401:
+#          description: The request requires user authentication
+#        404:
+#          description: User not found
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+#        410:
+#          description: User has already been deleted
+#          content:
+#            application/problem+json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorDetails'
+
+components:
+
+  securitySchemes:
+    OpenIDConnectAuth:
+      type: openIdConnect
+      description: >
+        The only authentication way available for now is Google OpenID Connect.
+        Enter your client Id and secret and authenticate behalf of your Google account
+      openIdConnectUrl: https://accounts.google.com/.well-known/openid-configuration
+      x-tokenName: id_token
+
+  parameters:
+    EntityId:
+      name: id
+      in: path
+      description: Entity ID
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    PageNumberParameter:
+      in: query
+      name: pageNumber
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: The number of page to request
+    PageSizeParameter:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+        minimum: 10
+        maximum: 100
+        default: 20
+      description: The numbers of items on a page
+
+  schemas:
+    ## Products model
+    Crypto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          uniqueItems: true
+      required:
+        - id
+        - name
+      example:
+        name: ASU Газированная РЕТ 1л
+    CreateCryptoRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+      required:
+        - name
+        - price
+      example:
+        name: BTC
+#    UpdateProductRequest:
+#      type: object
+#      properties:
+#        name:
+#          type: string
+#        price:
+#          type: number
+#          format: double
+#      example:
+#        name: ASU Газированная вода 1л
+#        price: 180
+
+    ## Users model
+#    User:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#        username:
+#          type: string
+#          pattern: '^[A-Za-z\-_]+$'
+#        firstName:
+#          type: string
+#        lastName:
+#          type: string
+#        email:
+#          type: string
+#          format: email
+#        phone:
+#          type: string
+#        roles:
+#          type: array
+#          items:
+#            type: string
+#            default: USER
+#            enum:
+#              - USER
+#              - ADMIN
+#    CreateUserRequest:
+#      type: object
+#      properties:
+#        username:
+#          type: string
+#          pattern: '^[A-Za-z\-_.]+$'
+#        firstName:
+#          type: string
+#        lastName:
+#          type: string
+#        email:
+#          type: string
+#          format: email
+#        password:
+#          type: string
+#          format: password
+#        phone:
+#          type: string
+#      required:
+#        - username
+#        - firstName
+#        - lastName
+#        - password
+#      example:
+#        username: adam.smith
+#        firstName: Adam
+#        lastName: Smith
+#        password: pa$$w0rd
+#        email: adam.smith@gmail.com
+#        phone: +997 (432) 234-45-45
+#    UpdateUserRequest:
+#      type: object
+#      properties:
+#        firstName:
+#          type: string
+#        lastName:
+#          type: string
+#        email:
+#          type: string
+#          format: email
+#        phone:
+#          type: string
+#      example:
+#        username: adam_smith
+#        firstName: Adam
+#        lastName: Smith
+#        email: adam_smith@gmail.com
+#        phone: +997-(777)-123-45-67
+
+    ## Common model
+    Link:
+      type: object
+      properties:
+        link:
+          type: string
+          format: uri
+    File:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+
+    ErrorDetails:
+      type: object
+      properties:
+        message:
+          type: string
+        exceptionClass:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+
+  examples:
+    addressExample:
+      value:
+        addressLine: улица Мухамеджана Тынышбаева, дом 24А
+        city: Нур-Султан
+        postalCode: 010011
+        country: KZ
+      summary: Sample address with only required fields
+
+
+
