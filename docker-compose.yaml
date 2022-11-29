@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+
+  db:
+    image: mysql
+    container_name: crypto_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: superUseR_passw0rd
+      MYSQL_DATABASE: crypto_db
+      MYSQL_USER: crypto_app_user
+      MYSQL_PASSWORD: passw0rd

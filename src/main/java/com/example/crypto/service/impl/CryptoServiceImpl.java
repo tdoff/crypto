@@ -50,6 +50,13 @@ public class CryptoServiceImpl implements CryptoService {
         repository.save(crypto);
     }
 
+    @Override
+    public CryptoEntity findByName(String name) {
+        var crypto = repository.findByName(name)
+                .orElseThrow(() -> new CryptoNotSupportedException(Crypto.class, name));
+        return crypto;
+    }
+
     private CryptoEntity getAccessibleCrypto(Long cryptoId) {
         final var crypto = repository.findById(cryptoId)
                 .orElseThrow(() -> new EntityNotFoundException(Crypto.class, cryptoId));

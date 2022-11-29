@@ -11,4 +11,6 @@ import java.util.*;
 public interface CryptoRepository extends CrudRepository<CryptoEntity, Long> {
 
     List<CryptoEntity> findByDeletedAtIsNull();
+
+    Optional<CryptoEntity> findByName(String name);
 }

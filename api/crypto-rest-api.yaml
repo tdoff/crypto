@@ -15,6 +15,133 @@ tags:
   - name: Cryptos
     description: Crypto API to manage crypto's prices
 paths:
+  ## Users API
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Retrieve all Users
+      operationId: getUsers
+      responses:
+        200:
+          description: The list of users has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          description: The request requires user authentication
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: This method creates a new user.
+      operationId: createUser
+      requestBody:
+        description: Create user request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+        required: true
+      responses:
+        201:
+          description: New user has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: The request requires user authentication
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: >
+        This method returns user with given ID
+      operationId: getUser
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        200:
+          description:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User with a given ID has not beed found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        410:
+          description: The user has already been deleted
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    patch:
+      tags:
+        - Users
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      requestBody:
+        description: Updated user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        204:
+          description: The user has been successfully updated
+        401:
+          description: The request requires user authentication
+        404:
+          description: User with a given ID has not beed found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        410:
+          description: The user has already been deleted
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    delete:
+      tags:
+        - Users
+      summary: Delete user by ID
+      description: For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
+      operationId: deleteUser
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        204:
+          description: User has been successfully deleted
+        401:
+          description: The request requires user authentication
+        404:
+          description: User not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        410:
+          description: User has already been deleted
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+
   ## Products API
   /cryptos:
     get:
@@ -82,39 +209,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ErrorDetails'
-#    patch:
-#      tags:
-#        - Products
-#      summary: Partially updates a given product
-#      description: >
-#        This method allows you to partially update a product with a given `id`.
-#        In case some properties are not set in the request, they will not be updated.
-#      operationId: updateProduct
-#      security: []
-#      parameters:
-#        - $ref: '#/components/parameters/EntityId'
-#      requestBody:
-#        description: Product update request
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/UpdateProductRequest'
-#        required: true
-#      responses:
-#        204:
-#          description: The product has been successfully updated
-#        404:
-#          description: Product with a given ID has not beed found
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#        410:
-#          description: The product has already been deleted
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
     delete:
       tags:
         - Cryptos
@@ -130,7 +224,7 @@ paths:
         204:
           description: Crypto has been successfully deleted
         404:
-          description: Crypto with a given ID has not beed found
+          description: Crypto with a given ID has not been found
           content:
             application/problem+json:
               schema:
@@ -141,132 +235,122 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ErrorDetails'
-  ## Users API
-#  /users:
-#    get:
-#      tags:
-#        - Users
-#      summary: Retrieve all Users
-#      operationId: getUsers
-#      responses:
-#        200:
-#          description: The list of users has been successfully fetched
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/User'
-#        401:
-#          description: The request requires user authentication
-#    post:
-#      tags:
-#        - Users
-#      summary: Create user
-#      description: This method creates a new user.
-#      operationId: createUser
-#      requestBody:
-#        description: Create user request
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/CreateUserRequest'
-#        required: true
-#      responses:
-#        201:
-#          description: New user has been successfully created
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/User'
-#        401:
-#          description: The request requires user authentication
-#  /users/{id}:
-#    get:
-#      tags:
-#        - Users
-#      summary: Get user by ID
-#      description: >
-#        This method returns user with given ID
-#      operationId: getUser
-#      parameters:
-#        - $ref: '#/components/parameters/EntityId'
-#      responses:
-#        200:
-#          description:
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/User'
-#        404:
-#          description: User with a given ID has not beed found
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#        410:
-#          description: The user has already been deleted
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#    patch:
-#      tags:
-#        - Users
-#      summary: Update user
-#      description: This can only be done by the logged in user.
-#      operationId: updateUser
-#      parameters:
-#        - $ref: '#/components/parameters/EntityId'
-#      requestBody:
-#        description: Updated user object
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/UpdateUserRequest'
-#        required: true
-#      responses:
-#        204:
-#          description: The user has been successfully updated
-#        401:
-#          description: The request requires user authentication
-#        404:
-#          description: User with a given ID has not beed found
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#        410:
-#          description: The user has already been deleted
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#    delete:
-#      tags:
-#        - Users
-#      summary: Delete user by ID
-#      description: For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
-#      operationId: deleteUser
-#      parameters:
-#        - $ref: '#/components/parameters/EntityId'
-#      responses:
-#        204:
-#          description: User has been successfully deleted
-#        401:
-#          description: The request requires user authentication
-#        404:
-#          description: User not found
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
-#        410:
-#          description: User has already been deleted
-#          content:
-#            application/problem+json:
-#              schema:
-#                $ref: '#/components/schemas/ErrorDetails'
+  /price-statistics:
+    post:
+      tags:
+        - Price Statistics
+      summary: Import price statistics from CSV file
+      operationId: importStatistics
+      requestBody:
+        description: Statistic's csv file
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/File'
+      responses:
+        201:
+          description: CSV file has been successfully processed
+        400:
+          description: Crypto with a given name is not supported
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+
+  ## Recommendation API
+  /recommendations/by-month:
+    get:
+      tags:
+        - Recommendations
+      summary: Calculates oldest/newest/min/max for each crypto for the whole month
+      operationId: calculateByMonth
+      parameters:
+        - $ref: '#/components/parameters/MonthParameter'
+      responses:
+        200:
+          description: Calculations for chosen month has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalculationResult'
+        401:
+          description: The request requires user authentication
+  /recommendations/by-crypto:
+    get:
+      tags:
+        - Recommendations
+      summary: Returns the oldest/newest/min/max values for a requested crypto
+      operationId: calculateByCrypto
+      parameters:
+        - $ref: '#/components/parameters/CryptoNameParameter'
+      responses:
+        200:
+          description: Calculations for chosen crypto has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalculationItem'
+        401:
+          description: The request requires user authentication
+  /recommendations/by-interval:
+    get:
+      tags:
+        - Recommendations
+      summary: Calculates oldest/newest/min/max for chosen crypto between any dates
+      operationId: calculateByInterval
+      parameters:
+        - $ref: '#/components/parameters/CryptoNameParameter'
+        - $ref: '#/components/parameters/StartDateParameter'
+        - $ref: '#/components/parameters/EndDateParameter'
+      responses:
+        200:
+          description: Calculations for chosen date interval has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalculationResult'
+        401:
+          description: The request requires user authentication
+  /recommendations/normalized-range-list:
+    get:
+      tags:
+        - Recommendations
+      summary: Returns a descending sorted list of all the cryptos, comparing the normalized range (i.e. (max-min)/min)
+      operationId: getNormalizedRangeList
+      parameters:
+        - $ref: '#/components/parameters/SpecificDayParameter'
+      responses:
+        200:
+          description: Sorted list of all the cryptos has been successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NormalizedRangeItem'
+        401:
+          description: The request requires user authentication
+  /recommendations/highest-normalized-range:
+    get:
+      tags:
+        - Recommendations
+      summary: Returns the crypto with the highest normalized range for a specific day
+      operationId: getHighestNormalizedRange
+      responses:
+        200:
+          description: The crypto with the highest normalized range has been successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NormalizedRangeItem'
+        401:
+          description: The request requires user authentication
 
 components:
 
@@ -289,28 +373,48 @@ components:
         type: integer
         format: int64
         minimum: 1
-    PageNumberParameter:
+    SpecificDayParameter:
       in: query
-      name: pageNumber
-      required: false
+      name: specificDay
+      required: true
       schema:
-        type: integer
-        minimum: 1
-        default: 1
-      description: The number of page to request
-    PageSizeParameter:
+        type: string
+        format: date
+      description: Specific day in format YYYY-MM-DD
+    StartDateParameter:
       in: query
-      name: pageSize
-      required: false
+      name: startDate
+      required: true
       schema:
-        type: integer
-        minimum: 10
-        maximum: 100
-        default: 20
-      description: The numbers of items on a page
+        type: string
+        format: date
+      description: Start date in format YYYY-MM-DD
+    EndDateParameter:
+      in: query
+      name: endDate
+      required: true
+      schema:
+        type: string
+        format: date
+      description: End date in format YYYY-MM-DD
+    CryptoNameParameter:
+      in: query
+      name: cryptoName
+      required: true
+      schema:
+        type: string
+      description: Name of requested crypto
+    MonthParameter:
+      in: query
+      name: month
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{4}\-(0?[1-9]|1[012])$'
+      description: Month chosen for calculation in format YYYY-MM
 
   schemas:
-    ## Products model
+    ## Crypto model
     Crypto:
       type: object
       properties:
@@ -324,107 +428,120 @@ components:
         - id
         - name
       example:
-        name: ASU Газированная РЕТ 1л
+        name: BTC
     CreateCryptoRequest:
       type: object
       properties:
         name:
           type: string
-        price:
-          type: number
-          format: double
       required:
         - name
-        - price
       example:
         name: BTC
-#    UpdateProductRequest:
-#      type: object
-#      properties:
-#        name:
-#          type: string
-#        price:
-#          type: number
-#          format: double
-#      example:
-#        name: ASU Газированная вода 1л
-#        price: 180
+    CalculationResult:
+      type: object
+      properties:
+        crypto:
+          $ref: '#/components/schemas/Crypto'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculationItem'
+    CalculationItem:
+      type: object
+      properties:
+        calculationType:
+          type: string
+          enum:
+            - OLDEST
+            - NEWEST
+            - MIN
+            - MAX
+        price:
+          type: number
+    NormalizedRangeItem:
+      type: object
+      properties:
+        crypto:
+          $ref: '#/components/schemas/Crypto'
+        value:
+          type: number
 
     ## Users model
-#    User:
-#      type: object
-#      properties:
-#        id:
-#          type: integer
-#          format: int64
-#        username:
-#          type: string
-#          pattern: '^[A-Za-z\-_]+$'
-#        firstName:
-#          type: string
-#        lastName:
-#          type: string
-#        email:
-#          type: string
-#          format: email
-#        phone:
-#          type: string
-#        roles:
-#          type: array
-#          items:
-#            type: string
-#            default: USER
-#            enum:
-#              - USER
-#              - ADMIN
-#    CreateUserRequest:
-#      type: object
-#      properties:
-#        username:
-#          type: string
-#          pattern: '^[A-Za-z\-_.]+$'
-#        firstName:
-#          type: string
-#        lastName:
-#          type: string
-#        email:
-#          type: string
-#          format: email
-#        password:
-#          type: string
-#          format: password
-#        phone:
-#          type: string
-#      required:
-#        - username
-#        - firstName
-#        - lastName
-#        - password
-#      example:
-#        username: adam.smith
-#        firstName: Adam
-#        lastName: Smith
-#        password: pa$$w0rd
-#        email: adam.smith@gmail.com
-#        phone: +997 (432) 234-45-45
-#    UpdateUserRequest:
-#      type: object
-#      properties:
-#        firstName:
-#          type: string
-#        lastName:
-#          type: string
-#        email:
-#          type: string
-#          format: email
-#        phone:
-#          type: string
-#      example:
-#        username: adam_smith
-#        firstName: Adam
-#        lastName: Smith
-#        email: adam_smith@gmail.com
-#        phone: +997-(777)-123-45-67
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+          pattern: '^[A-Za-z\-_]+$'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            default: USER
+            enum:
+              - USER
+              - ADMIN
+    CreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: '^[A-Za-z\-_.]+$'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        phone:
+          type: string
+      required:
+        - username
+        - firstName
+        - lastName
+        - password
+      example:
+        username: adam.smith
+        firstName: Adam
+        lastName: Smith
+        password: pa$$w0rd
+        email: adam.smith@gmail.com
+        phone: +997 (432) 234-45-45
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+      example:
+        username: adam_smith
+        firstName: Adam
+        lastName: Smith
+        email: adam_smith@gmail.com
+        phone: +997-(777)-123-45-67
 
     ## Common model
     Link:

@@ -14,4 +14,6 @@ public interface CryptoService {
     Crypto createNewCrypto(CreateCryptoRequest request);
 
     void delete(Long cryptoId);
+
+    CryptoEntity findByName(String name);
 }
