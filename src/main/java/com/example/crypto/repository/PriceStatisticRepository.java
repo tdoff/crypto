@@ -12,7 +12,9 @@ public interface PriceStatisticRepository extends CrudRepository<PriceStatisticE
 
     List<PriceStatisticEntity> findByDeletedAtIsNullAndCryptoName(String cryptoName);
     
-    List<PriceStatisticEntity> findByDeletedAtIsNullAndCryptoNameAndTimestampBetween(String cryptoName, ZonedDateTime startDateTime, ZonedDateTime endDateTime);
+    List<PriceStatisticEntity> findByDeletedAtIsNullAndCryptoNameAndTimestampDateBetween(String cryptoName, ZonedDateTime startDateTime, ZonedDateTime endDateTime);
 
-    List<PriceStatisticEntity> findByDeletedAtIsNullAndTimestampBetween(ZonedDateTime startDateTime, ZonedDateTime endDateTime);
+    List<PriceStatisticEntity> findByDeletedAtIsNullAndTimestampDateBetween(ZonedDateTime startDateTime, ZonedDateTime endDateTime);
+    
+    List<PriceStatisticEntity> findAllByDeletedAtIsNull();
 }

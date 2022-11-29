@@ -34,12 +34,12 @@ public class RecommendationController implements RecommendationsApi {
     }
 
     @Override
-    public ResponseEntity<NormalizedRangeItem> getHighestNormalizedRange() {
-        return ResponseEntity.ok(recommendationService.getHighestNormalizedRange());
+    public ResponseEntity<NormalizedRangeItem> getHighestNormalizedRange(LocalDate specificDay) {
+        return ResponseEntity.ok(recommendationService.getHighestNormalizedRange(specificDay));
     }
 
     @Override
-    public ResponseEntity<List<NormalizedRangeItem>> getNormalizedRangeList(LocalDate specificDay) {
-        return ResponseEntity.ok(recommendationService.getNormalizedRangeList(specificDay));
+    public ResponseEntity<List<NormalizedRangeItem>> getNormalizedRangeList() {
+        return ResponseEntity.ok(recommendationService.getNormalizedRangeList());
     }
 }

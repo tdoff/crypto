@@ -61,17 +61,20 @@ public class PriceStatisticServiceImpl implements PriceStatisticService {
         repository.save(priceStatistic);
     }
 
+    @Override
     public List<PriceStatisticEntity> findByCryptoName(String cryptoName) {
         return repository.findByDeletedAtIsNullAndCryptoName(cryptoName);
     }
 
+    @Override
     public List<PriceStatisticEntity> findByInterval(String cryptoName, LocalDate startDate, LocalDate endDate) {
         ZonedDateTime startDateTime = startDate.atStartOfDay(ZoneId.systemDefault());
         ZonedDateTime endDateTime = endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault());
 
-        return repository.findByDeletedAtIsNullAndCryptoNameAndTimestampBetween(cryptoName, startDateTime, endDateTime);
+        return repository.findByDeletedAtIsNullAndCryptoNameAndTimestampDateBetween(cryptoName, startDateTime, endDateTime);
     }
 
+    @Override
     public List<PriceStatisticEntity> findByMonth(String monthFormat) {
         String[] dateParts = monthFormat.split("-");
         int year = Integer.parseInt(dateParts[0]);
@@ -83,6 +86,18 @@ public class PriceStatisticServiceImpl implements PriceStatisticService {
         ZonedDateTime startDateTime = startDate.atStartOfDay(ZoneId.systemDefault());
         ZonedDateTime endDateTime = endDate.atStartOfDay(ZoneId.systemDefault());
 
-        return repository.findByDeletedAtIsNullAndTimestampBetween(startDateTime, endDateTime);
+        return repository.findByDeletedAtIsNullAndTimestampDateBetween(startDateTime, endDateTime);
+    }
+
+    @Override
+    public List<PriceStatisticEntity> findBySpecificDay(LocalDate specificDay) {
+        ZonedDateTime startDateTime = specificDay.atStartOfDay(ZoneId.systemDefault());
+        ZonedDateTime endDateTime = startDateTime.plusDays(1);
+        return repository.findByDeletedAtIsNullAndTimestampDateBetween(startDateTime, endDateTime);
+    }
+
+    @Override
+    public List<PriceStatisticEntity> findAll() {
+        return repository.findAllByDeletedAtIsNull();
     }
 }

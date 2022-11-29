@@ -17,4 +17,9 @@ public interface PriceStatisticService {
 
     List<PriceStatisticEntity> findByMonth(String monthFormat);
 
+
+    List<PriceStatisticEntity> findBySpecificDay(LocalDate specificDay);
+
+    List<PriceStatisticEntity> findAll();
+
 }

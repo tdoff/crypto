@@ -15,7 +15,7 @@ public interface RecommendationService {
 
     List<CalculationResult> calculateByMonth(String month);
 
-    NormalizedRangeItem getHighestNormalizedRange();
+    NormalizedRangeItem getHighestNormalizedRange(LocalDate specificDay);
 
-    List<NormalizedRangeItem> getNormalizedRangeList(LocalDate specificDay);
+    List<NormalizedRangeItem> getNormalizedRangeList();
 }

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,13 +55,41 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public NormalizedRangeItem getHighestNormalizedRange() {
-        return null;
+    public NormalizedRangeItem getHighestNormalizedRange(LocalDate specificDay) {
+        var priceStatistics = priceStatisticService.findBySpecificDay(specificDay);
+        List<NormalizedRangeItem> items = getNormalizedRangeItems(priceStatistics);
+        return items.stream().max(Comparator.comparing(NormalizedRangeItem::getValue)).orElse(null);
     }
 
     @Override
-    public List<NormalizedRangeItem> getNormalizedRangeList(LocalDate specificDay) {
-        return null;
+    public List<NormalizedRangeItem> getNormalizedRangeList() {
+        var priceStatistics = priceStatisticService.findAll();
+        List<NormalizedRangeItem> items = getNormalizedRangeItems(priceStatistics);
+
+        return items
+                .stream()
+                .sorted(Comparator.comparing(NormalizedRangeItem::getValue, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+    }
+
+    private List<NormalizedRangeItem> getNormalizedRangeItems(List<PriceStatisticEntity> priceStatistics) {
+        Map<CryptoEntity, List<PriceStatisticEntity>> map = priceStatistics.stream().collect(Collectors.groupingBy(PriceStatisticEntity::getCrypto));
+
+        List<NormalizedRangeItem> items = new ArrayList<>();
+        for (Map.Entry<CryptoEntity, List<PriceStatisticEntity>> e : map.entrySet()) {
+            Optional<PriceStatisticEntity> minOpt = priceStatistics.stream().min(Comparator.comparing(PriceStatisticEntity::getPrice));
+            Optional<PriceStatisticEntity> maxOpt = priceStatistics.stream().max(Comparator.comparing(PriceStatisticEntity::getPrice));
+
+            BigDecimal min = minOpt.isPresent() ? minOpt.get().getPrice() :  BigDecimal.ZERO;
+            BigDecimal max = maxOpt.isPresent() ? minOpt.get().getPrice() : BigDecimal.ZERO;
+
+            var item = new NormalizedRangeItem();
+            item.setCrypto(cryptoMapper.toDto(e.getKey()));
+            BigDecimal normalizedRange = min.equals(BigDecimal.ZERO) ? BigDecimal.ZERO : max.subtract(min).divide(min, 2, RoundingMode.HALF_UP);
+            item.setValue(normalizedRange);
+            items.add(item);
+        }
+        return items;
     }
 
     private static List<CalculationItem> collectCalculationItems(List<PriceStatisticEntity> priceStatistics) {
