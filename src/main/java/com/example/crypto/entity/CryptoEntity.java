@@ -10,6 +10,8 @@ import javax.validation.constraints.*;
 @Entity
 @Table(name = "cryptos")
 @EqualsAndHashCode(callSuper=false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class CryptoEntity extends AuditableEntity {
 
     @Id

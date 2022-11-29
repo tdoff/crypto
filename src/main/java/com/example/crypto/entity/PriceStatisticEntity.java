@@ -1,8 +1,11 @@
 package com.example.crypto.entity;
 
 import com.example.crypto.entity.audit.AuditableEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +21,8 @@ import java.time.ZonedDateTime;
 @Entity
 @Table(name = "price_statistics")
 @EqualsAndHashCode(callSuper=false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class PriceStatisticEntity extends AuditableEntity {
 
     @Id
