@@ -54,6 +54,8 @@ public class CryptoServiceImpl implements CryptoService {
     public CryptoEntity findByName(String name) {
         var crypto = repository.findByName(name)
                 .orElseThrow(() -> new CryptoNotSupportedException(Crypto.class, name));
+        checkDeletion(crypto);
+
         return crypto;
     }
 
@@ -61,10 +63,14 @@ public class CryptoServiceImpl implements CryptoService {
         final var crypto = repository.findById(cryptoId)
                 .orElseThrow(() -> new EntityNotFoundException(Crypto.class, cryptoId));
 
-        if (crypto.getDeletedAt() != null) {
-            throw new EntityDeletedException(Crypto.class, cryptoId, crypto.getDeletedAt());
-        }
+        checkDeletion(crypto);
 
         return crypto;
+    }
+
+    private static void checkDeletion(CryptoEntity crypto) {
+        if (crypto.getDeletedAt() != null) {
+            throw new EntityDeletedException(Crypto.class, crypto.getId(), crypto.getDeletedAt());
+        }
     }
 }
